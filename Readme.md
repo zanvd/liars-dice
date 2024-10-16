@@ -12,9 +12,9 @@ The game continues until only one player remains.
 2. On each player's turn, one can:
     * **Make a Bid:** Bid a higher number or value of dice than the last bid.
     * **Challenge:** If a player believes the last bid is incorrect, he can challenge.
-      All the dice are revealed and the challenger wins if there are fewer dice than bid and looses otherwise.
-      Looser of a challenge discards one die.
-3. If a player looses all of his dice, he is out of the game.
+      All the dice are revealed and the challenger wins if there are fewer dice than bid and loses otherwise.
+      Loser of a challenge discards one die.
+3. If a player loses all of his dice, he is out of the game.
 4. The game ends when only one player has any die remaining.
 
 ## Game options
