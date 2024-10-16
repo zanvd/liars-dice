@@ -1,5 +1,5 @@
 from liars_dice.game import Game
-from liars_dice.player import Player, Players
+from liars_dice.player import LivePlayer, Players
 
 
 def main() -> None:
@@ -20,7 +20,7 @@ def main() -> None:
             name = str(input(f"Name for player #{i}: "))
             if len(name) == 0:
                 print("Please enter a name.")
-        players[i] = Player(id=i, name=name)
+        players[i] = LivePlayer(id=i, name=name)
 
     are_ones_wild: bool = input("Count ones as wild? (y/N) ") == "y"
 

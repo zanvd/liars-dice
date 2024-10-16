@@ -3,7 +3,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from liars_dice.action import Bid, CancelBidException, Challenge
-from liars_dice.player import Player, Players, ZeroPlayer
+from liars_dice.player import LivePlayer, Players, ZeroPlayer
 
 
 class PlayerTestCase(TestCase):
@@ -11,7 +11,7 @@ class PlayerTestCase(TestCase):
     @patch('builtins.input', side_effect=["2", "3", "5", "1"])
     @patch('builtins.print')
     def test_bid_valid(self, *_) -> None:
-        player = Player(id=1, name="p1")
+        player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=2, number=2)
 
         bid = player.bid(last_bid, 10)
@@ -28,7 +28,7 @@ class PlayerTestCase(TestCase):
     @patch('builtins.input', side_effect=["3", "7", "6", "2"])
     @patch('builtins.print')
     def test_bid_invalid_value_retry(self, *_) -> None:
-        player = Player(id=1, name="p1")
+        player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=4, number=3)
 
         bid = player.bid(last_bid, 10)
@@ -40,7 +40,7 @@ class PlayerTestCase(TestCase):
     @patch('builtins.input', side_effect=["3", "1", "n", "3", "11", "n", "3", "3"])
     @patch('builtins.print')
     def test_bid_invalid_number_retry(self, *_) -> None:
-        player = Player(id=1, name="p1")
+        player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=3, number=2)
 
         bid = player.bid(last_bid, 10)
@@ -51,17 +51,17 @@ class PlayerTestCase(TestCase):
     @patch('builtins.input', side_effect=["6", "4", "y"])
     @patch('builtins.print')
     def test_bid_cancel_bid_exception(self, *_) -> None:
-        player = Player(id=1, name="p1")
+        player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=6, number=5)
 
         with self.assertRaises(CancelBidException):
             player.bid(last_bid, 10)
 
     def test_is_zero(self) -> None:
-        self.assertFalse(Player(1, "p1").is_zero)
+        self.assertFalse(LivePlayer(1, "p1").is_zero)
 
     def test_lose_die(self) -> None:
-        p = Player(1, "p1", 2)
+        p = LivePlayer(1, "p1", 2)
 
         p.lose_die()
         self.assertEqual(1, p.num_of_dice)
@@ -71,7 +71,7 @@ class PlayerTestCase(TestCase):
 
     @patch('builtins.input', return_value="1")
     def test_play_turn_valid_bid(self, _) -> None:
-        player = Player(id=1, name="p1")
+        player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=2, number=1)
 
         with patch.object(player, 'bid', return_value=Bid(value=3, number=3)):
@@ -83,7 +83,7 @@ class PlayerTestCase(TestCase):
 
     @patch('builtins.input', return_value="2")
     def test_play_turn_choose_challenge(self, _) -> None:
-        player = Player(id=1, name="p1")
+        player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=3, number=2)
 
         action = player.play_turn(last_bid, max_dice_num=10)
@@ -93,7 +93,7 @@ class PlayerTestCase(TestCase):
     @patch('builtins.input', side_effect=["6", "7", "1"])
     @patch('builtins.print')
     def test_play_turn_invalid_action(self, *_) -> None:
-        player = Player(id=1, name="p1")
+        player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=5, number=3)
 
         with patch.object(player, 'bid', return_value=Bid(value=6, number=4)):
@@ -105,7 +105,7 @@ class PlayerTestCase(TestCase):
 
     @patch('builtins.input', return_value="1")
     def test_play_turn_cancel_bid_then_challenge(self, _) -> None:
-        player = Player(id=1, name="p1")
+        player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=6, number=5)
 
         with patch.object(player, 'bid', side_effect=CancelBidException):
@@ -115,17 +115,17 @@ class PlayerTestCase(TestCase):
 
 
 class PlayersTestCase(TestCase):
-    p1: Player
-    p2: Player
-    p3: Player
-    p4: Player
+    p1: LivePlayer
+    p2: LivePlayer
+    p3: LivePlayer
+    p4: LivePlayer
     players: Players
 
     def setUp(self):
-        self.p1 = Player(id=1, name="p1")
-        self.p2 = Player(id=2, name="p2")
-        self.p3 = Player(id=3, name="p3")
-        self.p4 = Player(id=5, name="p4")
+        self.p1 = LivePlayer(id=1, name="p1")
+        self.p2 = LivePlayer(id=2, name="p2")
+        self.p3 = LivePlayer(id=3, name="p3")
+        self.p4 = LivePlayer(id=5, name="p4")
 
         self.players = Players()
         self.players[self.p1.id] = self.p1

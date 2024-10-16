@@ -4,15 +4,15 @@ from unittest.mock import MagicMock, patch
 
 from liars_dice.action import Bid, Challenge
 from liars_dice.game import Die, Game, Result, Round, Throw
-from liars_dice.player import Player, Players
+from liars_dice.player import LivePlayer, Players
 
 
 class CheckChallengeTestCase(TestCase):
-    player: Player
+    player: LivePlayer
     throws: list[Throw]
 
     def setUp(self) -> None:
-        self.player: Player = Player(1, "p1")
+        self.player: LivePlayer = LivePlayer(1, "p1")
         self.throws: list[Throw] = [
             Throw(dice=[Die(1), Die(2)], player=self.player),
             Throw(dice=[Die(5), Die(4)], player=self.player),
@@ -45,7 +45,7 @@ class DiceThrowTestCase(TestCase):
     @patch('builtins.print')
     @patch('os.system')
     def test_throws_num_eq_players_num(self, *_) -> None:
-        players: Players = Players({i: Player(i, f"p{i}") for i in range(1, 4)})
+        players: Players = Players({i: LivePlayer(i, f"p{i}") for i in range(1, 4)})
         throws, _ = Round._throw_dice(players)
 
         self.assertEqual(len(players), len(throws))
@@ -56,7 +56,7 @@ class DiceThrowTestCase(TestCase):
     def test_correct_num_of_dice_default(self, *_) -> None:
         players: Players = Players()
         for i in range(1, 5):
-            players[i] = Player(i, f"p{i}")
+            players[i] = LivePlayer(i, f"p{i}")
         throws, max_dice_num = Round._throw_dice(players)
 
         self.assertEqual(8, max_dice_num)
@@ -68,7 +68,7 @@ class DiceThrowTestCase(TestCase):
     def test_correct_num_of_dice_non_default(self, *_) -> None:
         players: Players = Players()
         for i in range(1, 5):
-            players[i] = Player(i, f"p{i}", num_of_dice=i)
+            players[i] = LivePlayer(i, f"p{i}", num_of_dice=i)
         throws, max_dice_num = Round._throw_dice(players)
 
         self.assertEqual(10, max_dice_num)

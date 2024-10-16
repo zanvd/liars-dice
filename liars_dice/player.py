@@ -1,10 +1,30 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from liars_dice.action import Action, Bid, CancelBidException, Challenge
 
 
+class Player(ABC):
+    id: int
+    name: str
+    num_of_dice: int
+
+    @property
+    @abstractmethod
+    def is_zero(self):
+        pass
+
+    @abstractmethod
+    def lose_die(self):
+        pass
+
+    @abstractmethod
+    def play_turn(self, last_bid: Bid, max_dice_num: int) -> Action:
+        pass
+
+
 @dataclass
-class Player:
+class LivePlayer(Player):
     id: int
     name: str
     num_of_dice: int = 2
@@ -91,6 +111,12 @@ class ZeroPlayer(Player):
     @property
     def is_zero(self) -> bool:
         return True
+
+    def lose_die(self):
+        pass
+
+    def play_turn(self, last_bid: Bid, max_dice_num: int) -> Action:
+        pass
 
 
 class Players(dict[int, Player]):
