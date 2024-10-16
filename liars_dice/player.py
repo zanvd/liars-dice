@@ -29,8 +29,37 @@ class LivePlayer(Player):
     name: str
     num_of_dice: int = 2
 
+    @property
+    def is_zero(self) -> bool:
+        return False
+
+    def lose_die(self) -> None:
+        self.num_of_dice -= 1
+
+    def play_turn(self, last_bid: Bid, max_dice_num: int) -> Action:
+        if not last_bid.is_zero():
+            try:
+                action: int = int(input("Please choose an action (1 for bid, 2 for challenge): "))
+            except ValueError:
+                print("Invalid action. Please try again.")
+                return self.play_turn(last_bid, max_dice_num)
+        else:
+            action: int = 1
+
+        match action:
+            case 1:
+                try:
+                    return self._bid(last_bid, max_dice_num)
+                except CancelBidException:
+                    return Challenge()
+            case 2:
+                return Challenge()
+            case _:
+                print("Invalid action. Please try again.")
+                return self.play_turn(last_bid, max_dice_num)
+
     @staticmethod
-    def bid(last_bid: Bid, max_dice_num: int) -> Bid:
+    def _bid(last_bid: Bid, max_dice_num: int) -> Bid:
         value: int = 0
         number: int = 0
 
@@ -71,35 +100,6 @@ class LivePlayer(Player):
                     raise CancelBidException()
 
         return Bid(value=value, number=number)
-
-    @property
-    def is_zero(self) -> bool:
-        return False
-
-    def lose_die(self) -> None:
-        self.num_of_dice -= 1
-
-    def play_turn(self, last_bid: Bid, max_dice_num: int) -> Action:
-        if not last_bid.is_zero():
-            try:
-                action: int = int(input("Please choose an action (1 for bid, 2 for challenge): "))
-            except ValueError:
-                print("Invalid action. Please try again.")
-                return self.play_turn(last_bid, max_dice_num)
-        else:
-            action: int = 1
-
-        match action:
-            case 1:
-                try:
-                    return self.bid(last_bid, max_dice_num)
-                except CancelBidException:
-                    return Challenge()
-            case 2:
-                return Challenge()
-            case _:
-                print("Invalid action. Please try again.")
-                return self.play_turn(last_bid, max_dice_num)
 
 
 @dataclass

@@ -14,12 +14,12 @@ class PlayerTestCase(TestCase):
         player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=2, number=2)
 
-        bid = player.bid(last_bid, 10)
+        bid = player._bid(last_bid, 10)
 
         self.assertEqual(bid.value, 2)
         self.assertEqual(bid.number, 3)
 
-        bid = player.bid(last_bid, 10)
+        bid = player._bid(last_bid, 10)
 
         self.assertEqual(bid.value, 5)
         self.assertEqual(bid.number, 1)
@@ -31,7 +31,7 @@ class PlayerTestCase(TestCase):
         player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=4, number=3)
 
-        bid = player.bid(last_bid, 10)
+        bid = player._bid(last_bid, 10)
 
         self.assertEqual(bid.value, 6)
         self.assertEqual(bid.number, 2)
@@ -43,7 +43,7 @@ class PlayerTestCase(TestCase):
         player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=3, number=2)
 
-        bid = player.bid(last_bid, 10)
+        bid = player._bid(last_bid, 10)
 
         self.assertEqual(bid.value, 3)
         self.assertEqual(bid.number, 3)
@@ -55,7 +55,7 @@ class PlayerTestCase(TestCase):
         last_bid = Bid(value=6, number=5)
 
         with self.assertRaises(CancelBidException):
-            player.bid(last_bid, 10)
+            player._bid(last_bid, 10)
 
     def test_is_zero(self) -> None:
         self.assertFalse(LivePlayer(1, "p1").is_zero)
@@ -74,7 +74,7 @@ class PlayerTestCase(TestCase):
         player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=2, number=1)
 
-        with patch.object(player, 'bid', return_value=Bid(value=3, number=3)):
+        with patch.object(player, '_bid', return_value=Bid(value=3, number=3)):
             action = player.play_turn(last_bid, max_dice_num=10)
 
             self.assertIsInstance(action, Bid)
@@ -96,7 +96,7 @@ class PlayerTestCase(TestCase):
         player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=5, number=3)
 
-        with patch.object(player, 'bid', return_value=Bid(value=6, number=4)):
+        with patch.object(player, '_bid', return_value=Bid(value=6, number=4)):
             action = player.play_turn(last_bid, max_dice_num=10)
 
             self.assertIsInstance(action, Bid)
@@ -108,7 +108,7 @@ class PlayerTestCase(TestCase):
         player = LivePlayer(id=1, name="p1")
         last_bid = Bid(value=6, number=5)
 
-        with patch.object(player, 'bid', side_effect=CancelBidException):
+        with patch.object(player, '_bid', side_effect=CancelBidException):
             action = player.play_turn(last_bid, max_dice_num=10)
 
             self.assertIsInstance(action, Challenge)
